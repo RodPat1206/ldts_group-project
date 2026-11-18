@@ -16,6 +16,7 @@ public class Arena {
     private final List<Coin> coins;
     private final List<Monster> monsters;
     private final List<Stone> stones;
+    private final List<Door> doors;
 
     private boolean gameOver = false;
 
@@ -28,11 +29,11 @@ public class Arena {
         this.width = width;
         this.height = height;
         this.hero = new Hero(1, 1);
-        this.stones = createPerStones();
-        createStones();
+        this.stones = createStones();
         this.walls = createWalls();
         this.coins = createCoins();
         this.monsters = createMonsters();
+        this.doors = null;
     }
 
     private List<Wall> createWalls() {
@@ -83,9 +84,48 @@ public class Arena {
         }
     }
 
+    private List<Stone> createStones() {
+        int w = 2; int h = 2;
+        while (h <= height) {
+            while (w <= width) {
+                Stone s = new Stone(w, h);
+                s.Unkillable();
+                stones.add(s);
+                w += 2;
+            }
+            h += 2;
+        }
+        Random random = new Random();
+        ArrayList<Stone> stones = new ArrayList<>();
+        boolean first = true;
+        while (stones.size() < 5) {
+            Position p = new Position(random.nextInt(width - 2) + 1,
+                    random.nextInt(height - 2) + 1);
+            while (p.getX() == 1 && (p.getY() == 1 || p.getY() ==2) || p.getX() == 2 && p.getY() == 1) {
+                p = new Position(random.nextInt(width - 2) + 1,
+                        random.nextInt(height - 2) + 1);
+            }
+            boolean taken = false;
+            for (Stone s : stones)
+                if (s.getPosition().equals(p)) {
+                    taken = true;
+                    break;
+                }
+            if (!taken) {
+                Stone st = new Stone(p.getX(), p.getY());
+                if (first) {
+                    st.aDoorable();
+                }
+                stones.add(st);
+            }
+        }
+        return stones;
+    }
+
     private void brokenStones() {
         for (Stone stone: stones) {
             if (stone.isKillable() && stone.isDead()) {
+                if (stone.hasDoor()) {doors.add(new Door(stone.getPosition().getX(), stone.getPosition().getY()));}
                 stones.remove(stone);
             }
         }
@@ -132,12 +172,11 @@ public class Arena {
     }
 
     public void draw(TextGraphics graphics) {
-        graphics.setBackgroundColor(TextColor.Factory.fromString("#2d523b"));
-        graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
         for (Wall wall :walls) wall.draw(graphics);
         for (Coin coin : coins) coin.draw(graphics);
         for (Stone stone : stones) stone.draw(graphics);
         for (Monster monster : monsters) monster.draw(graphics);
+        for (Door door : doors) door.draw(graphics);
         hero.draw(graphics);
     }
 
@@ -157,21 +196,6 @@ public class Arena {
                 coins.add(new Coin(p.getX(), p.getY()));
         }
         return coins;
-    }
-
-    private List<Stone> createStones() {
-        Random random = new Random();
-        ArrayList<Stone> stones = new ArrayList<>();
-        while (stones.size() < 5) {
-            Position p = new Position(random.nextInt(width - 2) + 1,
-                    random.nextInt(height - 2) + 1);
-            while (p.getX() == 1 && (p.getY() == 1 || p.getY() ==2) || p.getX() == 2 && p.getY() == 1) {
-                p = new Position(random.nextInt(width - 2) + 1,
-                        random.nextInt(height - 2) + 1);
-            }
-            stones.add(new Stone(p.getX(), p.getY()));
-        }
-        return stones;
     }
 
     public void processKey(KeyStroke key) {
