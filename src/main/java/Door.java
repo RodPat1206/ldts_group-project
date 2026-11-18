@@ -13,7 +13,7 @@ public class Door extends Element {
 
     @Override
     public void draw(TextGraphics graphics) {
-        graphics.setForegroundColor(TextColor.Factory.fromString("#ffc524"));
+        graphics.setForegroundColor(TextColor.Factory.fromString("#703C00"));
         graphics.putString(new TerminalPosition(position.getX(), position.getY()), "H");
     }
 }

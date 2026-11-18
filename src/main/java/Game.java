@@ -16,12 +16,12 @@ public class Game {
     private final Arena arena;
 
     public Game() throws IOException {
-        arena = new Arena(30, 13);
+        arena = new Arena(33, 15);
 
         Font font = new Font("Monospaced", Font.PLAIN, 30);
         AWTTerminalFontConfiguration fontConfig = AWTTerminalFontConfiguration.newInstance(font);
 
-        TerminalSize terminalSize = new TerminalSize(30, 13);
+        TerminalSize terminalSize = new TerminalSize(33, 15);
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
                 .setInitialTerminalSize(terminalSize);
         terminalFactory.setForceAWTOverSwing(true);

@@ -22,7 +22,14 @@ public class Stone extends Element {
 
     @Override
     public void draw(TextGraphics graphics) {
-        graphics.setForegroundColor(TextColor.Factory.fromString("#ffc524"));
-        graphics.putString(new TerminalPosition(position.getX(), position.getY()), "S");
+        if (killable) {
+            graphics.setForegroundColor(TextColor.Factory.fromString("#969696"));
+            graphics.putString(new TerminalPosition(position.getX(), position.getY()), "S");
+
+        }
+        else {
+            graphics.setForegroundColor(TextColor.Factory.fromString("#808080"));
+            graphics.putString(new TerminalPosition(position.getX(), position.getY()), "T");
+        }
     }
 }

@@ -29,9 +29,9 @@ public class Arena {
         this.width = width;
         this.height = height;
         this.hero = new Hero(1, 1);
-        this.stones = createStones();
         this.walls = createWalls();
         this.coins = createCoins();
+        this.stones = createStones();
         this.monsters = createMonsters();
         this.doors = null;
     }
@@ -85,9 +85,11 @@ public class Arena {
     }
 
     private List<Stone> createStones() {
-        int w = 2; int h = 2;
-        while (h <= height) {
-            while (w <= width) {
+        List<Stone> stones = new ArrayList<>();
+        int w; int h = 2;
+        while (h < height - 1) {
+            w = 2;
+            while (w < width - 1) {
                 Stone s = new Stone(w, h);
                 s.Unkillable();
                 stones.add(s);
@@ -96,9 +98,9 @@ public class Arena {
             h += 2;
         }
         Random random = new Random();
-        ArrayList<Stone> stones = new ArrayList<>();
         boolean first = true;
-        while (stones.size() < 5) {
+        int n = stones.size();
+        while (stones.size() - n < 150) {
             Position p = new Position(random.nextInt(width - 2) + 1,
                     random.nextInt(height - 2) + 1);
             while (p.getX() == 1 && (p.getY() == 1 || p.getY() ==2) || p.getX() == 2 && p.getY() == 1) {
@@ -172,11 +174,13 @@ public class Arena {
     }
 
     public void draw(TextGraphics graphics) {
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#FFFFFF"));
+        graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
         for (Wall wall :walls) wall.draw(graphics);
         for (Coin coin : coins) coin.draw(graphics);
         for (Stone stone : stones) stone.draw(graphics);
         for (Monster monster : monsters) monster.draw(graphics);
-        for (Door door : doors) door.draw(graphics);
+        if (doors != null) {for (Door door : doors) door.draw(graphics);}
         hero.draw(graphics);
     }
 
@@ -186,7 +190,7 @@ public class Arena {
         while (coins.size() < 5) {
             Position p = new Position(random.nextInt(width - 2) + 1,
                     random.nextInt(height - 2) + 1);
-            boolean taken = Taken(p);
+            boolean taken = p.getX()%2 == 0 && p.getY()%2 == 0;
             for (Coin c : coins)
                 if (c.getPosition().equals(p)) {
                     taken = true;

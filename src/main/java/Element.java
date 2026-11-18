@@ -3,7 +3,7 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 public abstract class Element {
     protected Position position;
     protected Health health;
-    protected boolean killable;
+    protected boolean killable = true;
 
     public Element(int x, int y) {
         position = new Position(x, y);

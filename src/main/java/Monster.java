@@ -22,7 +22,7 @@ public class Monster extends Element {
 
     @Override
     public void draw(TextGraphics graphics) {
-        graphics.setForegroundColor(TextColor.Factory.fromString("#422100"));
+        graphics.setForegroundColor(TextColor.Factory.fromString("#990000"));
         graphics.putString(new TerminalPosition(position.getX(), position.getY()), "M");
     }
 }
