@@ -41,3 +41,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+
+.idea/
+.gradle/
+out/
+build/
+*.iml

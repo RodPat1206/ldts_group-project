@@ -15,6 +15,7 @@ public class Arena {
     private final List<Wall> walls;
     private final List<Coin> coins;
     private final List<Monster> monsters;
+    private final List<Stone> stones;
 
     private boolean gameOver = false;
 
@@ -26,7 +27,9 @@ public class Arena {
     public Arena(int width, int height) {
         this.width = width;
         this.height = height;
-        this.hero = new Hero(10, 10);
+        this.hero = new Hero(1, 1);
+        this.stones = createPerStones();
+        createStones();
         this.walls = createWalls();
         this.coins = createCoins();
         this.monsters = createMonsters();
@@ -48,13 +51,20 @@ public class Arena {
         return walls;
     }
 
+    private boolean Taken(Position p) {
+        for (Stone stone : stones) {
+            if (p.equals(stone.getPosition())) {return true;}
+        }
+        return p.equals(hero.getPosition());
+    }
+
     private List<Monster> createMonsters() {
         Random random = new Random();
         List<Monster> monsters = new ArrayList<>();
         while (monsters.size() < 3) {
             Position p = new Position(random.nextInt(width - 2) + 1,
                     random.nextInt(height - 2) + 1);
-            boolean taken = p.equals(hero.getPosition());
+            boolean taken = Taken(p);
             for (Monster m : monsters)
                 if (m.getPosition().equals(p))
                     taken = true;
@@ -72,6 +82,15 @@ public class Arena {
             }
         }
     }
+
+    private void brokenStones() {
+        for (Stone stone: stones) {
+            if (stone.isKillable() && stone.isDead()) {
+                stones.remove(stone);
+            }
+        }
+    }
+
     private void moveHero(Position position) {
         if (canHeroMove(position)) {
             hero.setPosition(position);
@@ -82,6 +101,9 @@ public class Arena {
     private boolean isWalkable(Position position) {
         for (Wall wall : walls)
             if (wall.getPosition().equals(position))
+                return false;
+        for (Stone stone : stones)
+            if (stone.getPosition().equals(position))
                 return false;
         return position.getX() >= 0 && position.getX() < width
                 && position.getY() >= 0 && position.getY() < height;
@@ -114,6 +136,7 @@ public class Arena {
         graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width, height), ' ');
         for (Wall wall :walls) wall.draw(graphics);
         for (Coin coin : coins) coin.draw(graphics);
+        for (Stone stone : stones) stone.draw(graphics);
         for (Monster monster : monsters) monster.draw(graphics);
         hero.draw(graphics);
     }
@@ -124,7 +147,7 @@ public class Arena {
         while (coins.size() < 5) {
             Position p = new Position(random.nextInt(width - 2) + 1,
                     random.nextInt(height - 2) + 1);
-            boolean taken = p.equals(hero.getPosition());
+            boolean taken = Taken(p);
             for (Coin c : coins)
                 if (c.getPosition().equals(p)) {
                     taken = true;
@@ -134,6 +157,21 @@ public class Arena {
                 coins.add(new Coin(p.getX(), p.getY()));
         }
         return coins;
+    }
+
+    private List<Stone> createStones() {
+        Random random = new Random();
+        ArrayList<Stone> stones = new ArrayList<>();
+        while (stones.size() < 5) {
+            Position p = new Position(random.nextInt(width - 2) + 1,
+                    random.nextInt(height - 2) + 1);
+            while (p.getX() == 1 && (p.getY() == 1 || p.getY() ==2) || p.getX() == 2 && p.getY() == 1) {
+                p = new Position(random.nextInt(width - 2) + 1,
+                        random.nextInt(height - 2) + 1);
+            }
+            stones.add(new Stone(p.getX(), p.getY()));
+        }
+        return stones;
     }
 
     public void processKey(KeyStroke key) {

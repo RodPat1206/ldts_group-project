@@ -1,10 +1,10 @@
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
-import com.googlecode.lanterna.input.KeyStroke;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ public class Game {
     private final Arena arena;
 
     public Game() throws IOException {
-        arena = new Arena(40, 20);
+        arena = new Arena(60, 25);
 
         TerminalSize terminalSize = new TerminalSize(40, 20);
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
